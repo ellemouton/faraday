@@ -11,10 +11,43 @@ import (
 )
 
 var (
-	errNoPrices        = errors.New("no price data provided")
-	errPriceOutOfRange = errors.New("timestamp before beginning of price " +
+	errNoPrices            = errors.New("no price data provided")
+	errUnknownPriceBackend = errors.New("unknown price backend")
+	errPriceOutOfRange     = errors.New("timestamp before beginning of price " +
 		"dataset")
+
+	// errGranularityRequired is returned when a request is made that
+	// required fiat prices but the granularity of those prices is not set.
+	errGranularityRequired = errors.New("granularity required when " +
+		"fiat prices are enabled")
 )
+
+type PriceAPIBackend interface {
+	GetPrices(ctx context.Context, startTime, endTime time.Time) ([]*USDPrice, error)
+}
+
+type PriceBackend int
+
+const (
+	CoinCapPriceBackend PriceBackend = iota
+	CoinDeskPriceBackend
+)
+
+func NewPriceAPIBackend(backend PriceBackend, granularity *Granularity) (
+	PriceAPIBackend, error) {
+
+	switch backend {
+	case CoinCapPriceBackend:
+		if granularity == nil {
+			return nil, errGranularityRequired
+		}
+		return newCoinCapAPI(*granularity), nil
+	case CoinDeskPriceBackend:
+		return &coinDeskAPI{}, nil
+	}
+
+	return nil, errUnknownPriceBackend
+}
 
 // PriceRequest describes a request for price information.
 type PriceRequest struct {
@@ -30,7 +63,8 @@ type PriceRequest struct {
 
 // GetPrices gets a set of prices for a set of timestamps.
 func GetPrices(ctx context.Context, timestamps []time.Time,
-	granularity Granularity) (map[time.Time]*USDPrice, error) {
+	backend PriceBackend, granularity Granularity) (
+	map[time.Time]*USDPrice, error) {
 
 	if len(timestamps) == 0 {
 		return nil, nil
@@ -48,7 +82,12 @@ func GetPrices(ctx context.Context, timestamps []time.Time,
 	// timestamp if we have 1 entry, but that's ok.
 	start, end := timestamps[0], timestamps[len(timestamps)-1]
 
-	priceData, err := CoinCapPriceData(ctx, start, end, granularity)
+	client, err := NewPriceAPIBackend(backend, &granularity)
+	if err != nil {
+		return nil, err
+	}
+
+	priceData, err := client.GetPrices(ctx, start, end)
 	if err != nil {
 		return nil, err
 	}
@@ -66,14 +105,6 @@ func GetPrices(ctx context.Context, timestamps []time.Time,
 	}
 
 	return prices, nil
-}
-
-// CoinCapPriceData obtains price data over a given range for coincap.
-func CoinCapPriceData(ctx context.Context, start, end time.Time,
-	granularity Granularity) ([]*USDPrice, error) {
-
-	coinCapBackend := newCoinCapAPI(granularity)
-	return coinCapBackend.GetPrices(ctx, start, end)
 }
 
 // MsatToUSD converts a msat amount to usd. Note that this function coverts

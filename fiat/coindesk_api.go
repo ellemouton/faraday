@@ -54,7 +54,7 @@ func parseCoinDeskData(data []byte) ([]*USDPrice, error) {
 		return nil, err
 	}
 
-	var usdRecords []*USDPrice
+	var usdRecords = make([]*USDPrice, len(priceEntries.Data))
 
 	for date, price := range priceEntries.Data {
 		timestamp, err := time.Parse(coinDeskTimeFormat, date)

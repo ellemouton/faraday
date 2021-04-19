@@ -274,3 +274,13 @@ func parseChannelPoint(ctx *cli.Context) (*wire.OutPoint, error) {
 
 	return channelPoint, nil
 }
+
+func parseFiatBackend(fiatBackend string) (frdrpc.FiatBackend, error) {
+	if fiatBackend == "" || fiatBackend == "coincap" {
+		return frdrpc.FiatBackend_COINCAP, nil
+	} else if fiatBackend == "coindesk" {
+		return frdrpc.FiatBackend_COINDESK, nil
+	}
+
+	return frdrpc.FiatBackend_UNKNOWN_FIATBACKEND, fmt.Errorf("unknown fiat backend")
+}

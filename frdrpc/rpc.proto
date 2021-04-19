@@ -347,6 +347,15 @@ enum Granularity {
     DAY = 8;
 }
 
+/*
+FiatBackend is the API endpoint to be used for any fiat related queries.
+*/
+enum FiatBackend {
+    UNKNOWN_FIATBACKEND = 0;
+    COINCAP = 1;
+    COINDESK = 2;
+}
+
 message ExchangeRateRequest {
     reserved 1;
 
@@ -357,6 +366,9 @@ message ExchangeRateRequest {
 
     // The level of granularity at which we want the bitcoin price to be quoted.
     Granularity granularity = 4;
+
+    // The api to be used for fiat related queries.
+    FiatBackend fiat_backend = 5;
 }
 
 message ExchangeRateResponse {
@@ -411,6 +423,9 @@ message NodeAuditRequest {
     categories report the category name in the CustomCategory field.
     */
     repeated CustomCategory custom_categories = 6;
+
+    // The api to be used for fiat related queries.
+    FiatBackend fiat_backend = 7;
 }
 
 message CustomCategory{
