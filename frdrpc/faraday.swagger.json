@@ -406,12 +406,16 @@
       "properties": {
         "price": {
           "type": "string",
-          "description": "The price of 1 BTC, expressed in USD."
+          "description": "The price of 1 BTC, expressed in the currency denoted in the currency\nfield."
         },
         "price_timestamp": {
           "type": "string",
           "format": "uint64",
           "description": "The timestamp for this price price provided."
+        },
+        "currency": {
+          "type": "string",
+          "description": "The currency that the price is denoted in."
         }
       }
     },
@@ -735,7 +739,7 @@
         },
         "fiat": {
           "type": "string",
-          "description": "The fiat amount of the entry's amount in USD."
+          "description": "The fiat amount of the entry's amount in the currency specified in the\nbtc_price field."
         },
         "reference": {
           "type": "string",
