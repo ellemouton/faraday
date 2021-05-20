@@ -96,7 +96,21 @@ var onChainReportCommand = cli.Command{
 		cli.StringFlag{
 			Name: "fiat_backend",
 			Usage: "fiat backend to be used. Options include: " +
-				"'coincap' (default) and 'coindesk'",
+				"'coincap' (default), 'coindesk' " +
+				"and 'custom' which requires the currency " +
+				"and csv_path flags to be set.",
+		},
+		cli.StringFlag{
+			Name: "currency",
+			Usage: "currency that the fiat prices will be quoted " +
+				"in. This is only used if the fiat_backend " +
+				"flag is set to 'custom'.",
+		},
+		cli.StringFlag{
+			Name: "prices_csv_path",
+			Usage: "The path to the CSV formatted price data. " +
+				"This is only used if the fiat_backend " +
+				"flag is set to 'custom'.",
 		},
 	},
 	Action: queryOnChainReport,
@@ -118,6 +132,8 @@ func queryOnChainReport(ctx *cli.Context) error {
 		EndTime:     uint64(ctx.Int64("end_time")),
 		DisableFiat: !ctx.IsSet("enable_fiat"),
 		FiatBackend: fiatBackend,
+		Currency:    ctx.String("currency"),
+		CsvPath:     ctx.String("prices_csv_path"),
 	}
 
 	// If start time is zero, default to a week ago.

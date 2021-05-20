@@ -70,6 +70,9 @@ func fiatBackendFromRPC(backend FiatBackend) (fiat.PriceBackend, error) {
 	case FiatBackend_COINDESK:
 		return fiat.CoinDeskPriceBackend, nil
 
+	case FiatBackend_CUSTOM:
+		return fiat.CustomPriceBackend, nil
+
 	default:
 		return fiat.UnknownPriceBackend,
 			fmt.Errorf("unknown fiat backend: %v", backend)
@@ -114,6 +117,8 @@ func parseExchangeRateRequest(req *ExchangeRateRequest) ([]time.Time,
 	return timestamps, &fiat.PriceSourceConfig{
 		Backend:     fiatBackend,
 		Granularity: granularity,
+		CSVPath:     req.CsvPath,
+		Currency:    req.Currency,
 	}, nil
 }
 

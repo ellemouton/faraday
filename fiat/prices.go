@@ -138,6 +138,16 @@ func NewPriceSource(cfg *PriceSourceConfig) (
 		return &PriceSource{
 			impl: &coinDeskAPI{},
 		}, nil
+
+	case CustomPriceBackend:
+		if cfg.CSVPath == "" || cfg.Currency == "" {
+			return nil, errors.New("both csv path and " +
+				"currency must be set if a custom price " +
+				"backend is to be used")
+		}
+		return &PriceSource{
+			impl: newCustomPricesAPI(cfg.CSVPath, cfg.Currency),
+		}, nil
 	}
 
 	return nil, errUnknownPriceBackend

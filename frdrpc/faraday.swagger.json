@@ -97,16 +97,31 @@
           },
           {
             "name": "fiat_backend",
-            "description": "The api to be used for fiat related queries.\n\n - COINCAP: Use the CoinCap API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coincap.io/v2/assets/bitcoin/history\n - COINDESK: Use the CoinDesk API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coindesk.com/v1/bpi/historical/close.json",
+            "description": "The api to be used for fiat related queries.\n\n - COINCAP: Use the CoinCap API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coincap.io/v2/assets/bitcoin/history\n - COINDESK: Use the CoinDesk API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coindesk.com/v1/bpi/historical/close.json\n - CUSTOM: Use custom price data from a provided CSV file.",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "UNKNOWN_FIATBACKEND",
               "COINCAP",
-              "COINDESK"
+              "COINDESK",
+              "CUSTOM"
             ],
             "default": "UNKNOWN_FIATBACKEND"
+          },
+          {
+            "name": "currency",
+            "description": "The currency that the custom price data is quoted in. This is only used\nif the CUSTOM FiatBackend is used.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "csv_path",
+            "description": "The path to the CSV file containing the custom price data. This is only\nused if the CUSTOM FiatBackend is used.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -203,16 +218,31 @@
           },
           {
             "name": "fiat_backend",
-            "description": "The api to be used for fiat related queries.\n\n - COINCAP: Use the CoinCap API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coincap.io/v2/assets/bitcoin/history\n - COINDESK: Use the CoinDesk API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coindesk.com/v1/bpi/historical/close.json",
+            "description": "The api to be used for fiat related queries.\n\n - COINCAP: Use the CoinCap API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coincap.io/v2/assets/bitcoin/history\n - COINDESK: Use the CoinDesk API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coindesk.com/v1/bpi/historical/close.json\n - CUSTOM: Use custom price data from a provided CSV file.",
             "in": "query",
             "required": false,
             "type": "string",
             "enum": [
               "UNKNOWN_FIATBACKEND",
               "COINCAP",
-              "COINDESK"
+              "COINDESK",
+              "CUSTOM"
             ],
             "default": "UNKNOWN_FIATBACKEND"
+          },
+          {
+            "name": "currency",
+            "description": "The currency that the custom price data is quoted in. This is only used\nif the CUSTOM FiatBackend is used.",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "csv_path",
+            "description": "The path to the CSV file containing the custom price data. This is only\nused if the CUSTOM FiatBackend is used.",
+            "in": "query",
+            "required": false,
+            "type": "string"
           }
         ],
         "tags": [
@@ -621,10 +651,11 @@
       "enum": [
         "UNKNOWN_FIATBACKEND",
         "COINCAP",
-        "COINDESK"
+        "COINDESK",
+        "CUSTOM"
       ],
       "default": "UNKNOWN_FIATBACKEND",
-      "description": "FiatBackend is the API endpoint to be used for any fiat related queries.\n\n - COINCAP: Use the CoinCap API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coincap.io/v2/assets/bitcoin/history\n - COINDESK: Use the CoinDesk API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coindesk.com/v1/bpi/historical/close.json"
+      "description": "FiatBackend is the API endpoint to be used for any fiat related queries.\n\n - COINCAP: Use the CoinCap API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coincap.io/v2/assets/bitcoin/history\n - COINDESK: Use the CoinDesk API for fiat price information.\nThis API is reached through the following URL:\nhttps://api.coindesk.com/v1/bpi/historical/close.json\n - CUSTOM: Use custom price data from a provided CSV file."
     },
     "frdrpcGranularity": {
       "type": "string",

@@ -57,6 +57,8 @@ func parseNodeAuditRequest(ctx context.Context, cfg *Config,
 	priceSourceCfg := &fiat.PriceSourceConfig{
 		Backend:     fiatBackend,
 		Granularity: granularity,
+		Currency:    req.Currency,
+		CSVPath:     req.CsvPath,
 	}
 
 	pubkey, err := route.NewVertexFromBytes(info.IdentityPubkey[:])

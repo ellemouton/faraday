@@ -335,6 +335,9 @@ enum FiatBackend {
     // This API is reached through the following URL:
     // https://api.coindesk.com/v1/bpi/historical/close.json
     COINDESK = 2;
+
+    // Use custom price data from a provided CSV file.
+    CUSTOM = 3;
 }
 
 message ExchangeRateRequest {
@@ -350,6 +353,14 @@ message ExchangeRateRequest {
 
     // The api to be used for fiat related queries.
     FiatBackend fiat_backend = 5;
+
+    // The currency that the custom price data is quoted in. This is only used
+    // if the CUSTOM FiatBackend is used.
+    string currency = 6;
+
+    // The path to the CSV file containing the custom price data. This is only
+    // used if the CUSTOM FiatBackend is used.
+    string csv_path = 7;
 }
 
 message ExchangeRateResponse {
@@ -411,6 +422,14 @@ message NodeAuditRequest {
 
     // The api to be used for fiat related queries.
     FiatBackend fiat_backend = 7;
+
+    // The currency that the custom price data is quoted in. This is only used
+    // if the CUSTOM FiatBackend is used.
+    string currency = 8;
+
+    // The path to the CSV file containing the custom price data. This is only
+    // used if the CUSTOM FiatBackend is used.
+    string csv_path = 9;
 }
 
 message CustomCategory {
