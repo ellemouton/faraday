@@ -115,7 +115,7 @@ func parseExchangeRateRequest(req *ExchangeRateRequest) ([]time.Time,
 	return timestamps, fiatBackend, granularity, nil
 }
 
-func exchangeRateResponse(prices map[time.Time]*fiat.USDPrice) *ExchangeRateResponse {
+func exchangeRateResponse(prices map[time.Time]*fiat.Price) *ExchangeRateResponse {
 	fiatVals := make([]*ExchangeRate, 0, len(prices))
 
 	for ts, price := range prices {
@@ -124,6 +124,7 @@ func exchangeRateResponse(prices map[time.Time]*fiat.USDPrice) *ExchangeRateResp
 			BtcPrice: &BitcoinPrice{
 				Price:          price.Price.String(),
 				PriceTimestamp: uint64(price.Timestamp.Unix()),
+				Currency:       price.Currency,
 			},
 		})
 	}
