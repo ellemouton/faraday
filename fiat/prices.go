@@ -37,6 +37,26 @@ type PriceSource struct {
 	impl fiatBackend
 }
 
+// PriceSourceConfig is a struct holding various config options used for
+// initialising a new PriceSource.
+type PriceSourceConfig struct {
+	// Backend is the PriceBackend to be used for fetching price data.
+	Backend PriceBackend
+
+	// Granularity specifies the level of granularity with which we want to
+	// get fiat prices. This option is only used for the CoinCap
+	// PriceBackend.
+	Granularity *Granularity
+
+	// CSVPath is the path to the file where price data can be found. This
+	// is used for the custom prices PriceBackend.
+	CSVPath string
+
+	// Currency is the currency code that the fiat prices should be quoted
+	// in. This is currently used only for the custom prices PriceBackend.
+	Currency string
+}
+
 // GetPrices fetches price information using the given the PriceSource
 // fiatBackend implementation. GetPrices also validates the time parameters and
 // sorts the results.
@@ -102,16 +122,16 @@ func (p PriceBackend) String() string {
 
 // NewPriceSource returns a PriceSource which can be used to query price
 // data.
-func NewPriceSource(backend PriceBackend, granularity *Granularity) (
+func NewPriceSource(cfg *PriceSourceConfig) (
 	*PriceSource, error) {
 
-	switch backend {
+	switch cfg.Backend {
 	case UnknownPriceBackend, CoinCapPriceBackend:
-		if granularity == nil {
+		if cfg.Granularity == nil {
 			return nil, errGranularityRequired
 		}
 		return &PriceSource{
-			impl: newCoinCapAPI(*granularity),
+			impl: newCoinCapAPI(*cfg.Granularity),
 		}, nil
 
 	case CoinDeskPriceBackend:
@@ -137,8 +157,7 @@ type PriceRequest struct {
 
 // GetPrices gets a set of prices for a set of timestamps.
 func GetPrices(ctx context.Context, timestamps []time.Time,
-	backend PriceBackend, granularity Granularity) (
-	map[time.Time]*Price, error) {
+	priceCfg *PriceSourceConfig) (map[time.Time]*Price, error) {
 
 	if len(timestamps) == 0 {
 		return nil, nil
@@ -156,7 +175,7 @@ func GetPrices(ctx context.Context, timestamps []time.Time,
 	// timestamp if we have 1 entry, but that's ok.
 	start, end := timestamps[0], timestamps[len(timestamps)-1]
 
-	client, err := NewPriceSource(backend, &granularity)
+	client, err := NewPriceSource(priceCfg)
 	if err != nil {
 		return nil, err
 	}
