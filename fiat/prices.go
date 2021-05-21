@@ -22,6 +22,9 @@ var (
 	// required fiat prices but the granularity of those prices is not set.
 	errGranularityRequired = errors.New("granularity required when " +
 		"fiat prices are enabled")
+
+	errPricePointsRequired = errors.New("price points required " +
+		"for a custom price backend")
 )
 
 // fiatBackend is an interface that must be implemented by any backend that
@@ -133,6 +136,16 @@ func NewPriceSource(cfg *PriceSourceConfig) (
 	case CoinDeskPriceBackend:
 		return &PriceSource{
 			impl: &coinDeskAPI{},
+		}, nil
+
+	case CustomPriceBackend:
+		if cfg.PricePoints == nil {
+			return nil, errPricePointsRequired
+		}
+		return &PriceSource{
+			impl: &customPrices{
+				entries: cfg.PricePoints,
+			},
 		}, nil
 	}
 
