@@ -7,13 +7,13 @@ require (
 	github.com/btcsuite/btclog v0.0.0-20170628155309-84c8d2346e9f
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.5.0
 	github.com/jessevdk/go-flags v1.4.0
-	github.com/lightninglabs/lndclient v0.15.0-10
+	github.com/lightninglabs/lndclient v0.16.0-0
 	github.com/lightninglabs/protobuf-hex-display v1.4.3-hex-display
-	github.com/lightningnetwork/lnd v0.15.0-beta
+	github.com/lightningnetwork/lnd v0.15.0-beta.rc6.0.20220714125147-af97b8f877c2
 	github.com/lightningnetwork/lnd/cert v1.1.1
 	github.com/shopspring/decimal v1.2.0
 	github.com/stretchr/testify v1.7.1
-	github.com/urfave/cli v1.22.4
+	github.com/urfave/cli v1.22.9
 	google.golang.org/grpc v1.38.0
 	google.golang.org/protobuf v1.26.0
 	gopkg.in/macaroon-bakery.v2 v2.0.1

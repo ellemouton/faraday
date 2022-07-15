@@ -181,12 +181,16 @@ func (s *RPCServer) Start() error {
 	}()
 
 	// Set up the macaroon service.
-	var err error
+	rks, err := lndclient.NewBoltMacaroonStore(
+		s.cfg.FaradayDir, "macaroons.db", macDatabaseOpenTimeout,
+	)
+	if err != nil {
+		return err
+	}
+
 	s.macaroonService, err = lndclient.NewMacaroonService(
 		&lndclient.MacaroonServiceConfig{
-			DBPath:           s.cfg.FaradayDir,
-			DBFileName:       "macaroons.db",
-			DBTimeout:        macDatabaseOpenTimeout,
+			RootKeyStore:     rks,
 			MacaroonLocation: faradayMacaroonLocation,
 			MacaroonPath:     s.cfg.MacaroonPath,
 			Checkers: []macaroons.Checker{
@@ -336,12 +340,17 @@ func (s *RPCServer) StartAsSubserver(lndClient lndclient.LndServices,
 
 	if withMacaroonService {
 		// Set up the macaroon service.
-		var err error
+		rks, err := lndclient.NewBoltMacaroonStore(
+			s.cfg.FaradayDir, "macaroons.db",
+			macDatabaseOpenTimeout,
+		)
+		if err != nil {
+			return err
+		}
+
 		s.macaroonService, err = lndclient.NewMacaroonService(
 			&lndclient.MacaroonServiceConfig{
-				DBPath:           s.cfg.FaradayDir,
-				DBFileName:       "macaroons.db",
-				DBTimeout:        macDatabaseOpenTimeout,
+				RootKeyStore:     rks,
 				MacaroonLocation: faradayMacaroonLocation,
 				MacaroonPath:     s.cfg.MacaroonPath,
 				Checkers: []macaroons.Checker{
